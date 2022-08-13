@@ -172,7 +172,10 @@ public class Main {
 		return output;
 	}
 	
+	/*
+	Paste json file here, and make sure that 'Escape text when pasting into a string literal' setting is on
+	*/
 	public static void main(String[] args) {
-		System.out.print(makeIngest("[[\"Form Code\",\"TB-15\"],[\"Passage Code\",\"pd-40\"],[\"Question Number\",\"42\"],[\"Problem Set Number\",\"1\"],[\"Test\",\"SAT\"],[\"Subject\",\"Reading\"],[\"Category\",\"Information and Ideas/Citing textual evidence\"],[\"Difficulty\",\"4\"],[\"Analysis Category\",\"History/Social Studies\"],[\"Command of Evidence\"],[\"Question\",\"Which choice provides the best evidence for the answer to the previous question?\"],[\"Choices\",[\"\\u005Creflines [Capital]{ThereApprehension} (“There \\u005CEllipsis apprehension”)\",\"\\u005Creflines [Capital]{ItIsYou} (“It \\u005CEllipsis you”)\",\"\\u005Creflines [Capital]{IHaveExists} (“I have \\u005CEllipsis exists”)\",\"\\u005Creflines [Capital]{ItIsLaw} (“It \\u005CEllipsis law”)\"]],[\"Answer\",\"D\"],[\"Solution\",\"Choice~\\u005CTextChoice {4} is correct. It cites the sentence relied upon in the solution for the preceding question.\"]]"));
+		System.out.println(MakeIngest("");
 	}
 }
