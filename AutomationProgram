@@ -1,3 +1,8 @@
+/*
+Here's Wyatt Bellinger's ingest automation in Java
+*/
+
+
 public class Main {
 	public static String makeIngest(String input) {
 		String tableName = "", 
