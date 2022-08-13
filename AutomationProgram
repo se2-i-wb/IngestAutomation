@@ -1,0 +1,178 @@
+public class Main {
+	public static String makeIngest(String input) {
+		String tableName = "", 
+			   formCode = "", 
+			   passageCode = "", 
+			   problemSetNumber = "", 
+			   subject = "", 
+			   calculator = "", 
+			   category = "", 
+			   questionNumber = "", 
+			   diagram = "", 
+			   question = "", 
+			   choices = "", 
+			   answer = "", 
+			   solution = "";
+		String output = "", add = "";
+		int scan = 0;
+		while(scan < input.length()) {
+			if(solution.length() > 0) {
+				add += "const tableName = '" + formCode.substring(0,2) + formCode.substring(3) + "'\n";
+				add += "let formCode = '" + formCode + "'\n";
+				add += "let passageCode = '" + passageCode + "'\n";
+				add += "let problemSetNumber = " + problemSetNumber + "\n";
+				add += "let subject = '" + subject + "'\n";
+				if(problemSetNumber.equals("3")) {
+					add += "let calculator = false\n";
+				}
+				else if(problemSetNumber.equals("4")) {
+					add += "let calculator = true\n";
+				}
+				else {
+					add += "let calculator = null\n";
+				}
+				add += "let category = '" + category + "'\n";
+				add += "let questionNumber = " + questionNumber + "\n";
+				if(problemSetNumber.equals("3") || problemSetNumber.equals("4")) {
+					add += "let diagram = '" + diagram + "'\n";
+				}
+				add += "let question = '" + question + "'\n";
+				add += "let choices = " + "[" + choices.replace("\"", "'") + "]\n";
+				add += "let answer = '" + answer + "'\n";
+				add += "let solution = '" + solution + "'\n";
+				
+				if(problemSetNumber.equals("1") || problemSetNumber.equals("2")) {
+					output += ("SECTION " + problemSetNumber + " QUESTION NUMBER " + questionNumber + "\n" + 
+				               "const { Pool, Client } = require('pg')\n\nconst client = new Client({\n  host: 'lifechanger-db.postgres.database.azure.com',\n  database: 'lifechanger',\n  user: 'se2',\n  password: 'Onechangeatatime!',\n  port: 5432,\n  ssl: true,\n})\n\nclient.on('error', (err, client) => {\n  console.error('Error:', err)\n})\n\n" +
+				               add + "let passage = {\n  PassageCode: '',\n  PassageType: '',\n  PreText: '',\n  Title: '',\n  FirstParagraph: '',\n}\nlet passage2 = {}\nlet passage_emp = {\n  passageCode: '',\n}\n\n" + 
+							   "client\n  .connect()\n  .then(() => console.log('connected'))\n\n  .then(() =>\n    client.query(\n      'INSERT INFO ${tableName} (form_code, passage_code, passage, passage2, passage_emp, problem_set_number, subject, calculator, category, question_number, question, choices, answer, solution) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)',\n      [\n        formCode,\n        passageCode,\n        passage,\n        passage2,\n        passage_emp,\n        problemSetNumber,\n        subject,\n        calculator,\n        category,\n        questionNumber,\n        question,\n        choices,\n        answer,\n        solution,\n      ]\n    )\n  )\n  .then(() => client.query(`select * from ${tableName}`))\n  .then((results) => console.table(results.rows))\n  .catch((err) => console.log(err))\n  .finally(() => client.end())\n\n\n");
+				}
+				
+				if(problemSetNumber.equals("3") || problemSetNumber.equals("4")) {
+					output += ("SECTION " + problemSetNumber + " QUESTION NUMBER " + questionNumber + "\n" + 
+				               "const { Pool, Client } = require('pg')\n\nconst client = new Client({\n  host: 'lifechanger-db.postgres.database.azure.com',\n  database: 'lifechanger',\n  user: 'se2',\n  password: 'Onechangeatatime!',\n  port: 5432,\n  ssl: true,\n})\n\nclient.on('error', (err, client) => {\n  console.error('Error:', err)\n})\n\n" +
+							   add +
+						       "let passage = {}\nlet passage2 = {}\nlet passage_emp = {}" +
+							   "\n\nclient\n  .connect()\n  .then(() => console.log('connected'))\n\n  .then(() =>\n    client.query(\n      'INSERT INFO ${tableName} (form_code, passage_code, passage, passage2, passage_emp, problem_set_number, subject, calculator, category, question_number, diagram, question, choices, answer, solution) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15)',\n      [\n        formCode,\n        passageCode,\n        passage,\n        passage2,\n        passage_emp,\n        problemSetNumber,\n        subject,\n        calculator,\n        category,\n        questionNumber,\n        diagram,\n        question,\n        choices,\n        answer,\n        solution,\n      ]\n    )\n  )\n  .then(() => client.query(`select * from ${tableName}`))\n  .then((results) => console.table(results.rows))\n  .catch((err) => console.log(err))\n  .finally(() => client.end())\n\n\n");
+				}
+				tableName = ""; formCode = ""; passageCode = ""; problemSetNumber = ""; subject = ""; calculator = ""; category = ""; questionNumber = ""; diagram = ""; question = ""; choices = ""; answer = ""; solution = ""; add = "";
+			}
+            
+			//Declare formCode Variable
+			if(scan < input.length() - 9 && formCode.length()==0 && input.substring(scan, scan+9).equals("Form Code")) {
+				int count = scan + 12;
+				for(int i = scan + 12; !input.substring(i, i + 1).equals("]"); i++) {
+					count++;
+				}
+				formCode = input.substring(scan + 12, count - 1);
+				scan = count + 3;
+			}
+			
+			//Declare passageCode Variable
+			if(scan < input.length() - 12 && passageCode.length()==0 && input.substring(scan, scan+12).equals("Passage Code")) {
+				int count = scan + 15;
+				for(int i = scan + 15; !input.substring(i, i + 1).equals("]"); i++) {
+					count++;
+				}
+				passageCode = input.substring(scan + 15, count - 1);
+				scan = count + 3;
+			}
+			
+			//Declare problemSetNumber Variable
+			if(scan < input.length() - 18 && problemSetNumber.length()==0 && input.substring(scan, scan+18).equals("Problem Set Number")) {
+				int count = scan + 21;
+				for(int i = scan + 21; !input.substring(i, i + 1).equals("]"); i++) {
+					count++;
+				}
+				problemSetNumber = input.substring(scan + 21, count - 1);
+				scan = count + 3;
+			}
+			
+			//Declare subject Variable
+			if(scan < input.length() - 7 && subject.length()==0 && input.substring(scan, scan+7).equals("Subject")) {
+				int count = scan + 10;
+				for(int i = scan + 10; !input.substring(i, i + 1).equals("]"); i++) {
+					count++;
+				}
+				subject = input.substring(scan + 10, count - 1);
+				scan = count + 3;
+			}
+			
+			//Declare category Variable
+			if(scan < input.length() - 8 && category.length()==0 && input.substring(scan, scan+8).equals("Category")) {
+				int count = scan + 11;
+				for(int i = scan + 11; !input.substring(i, i + 1).equals("]"); i++) {
+					count++;
+				}
+				category = input.substring(scan + 11, count - 1);
+				scan = count + 3;
+			}
+			
+			//Declare diagram Variable
+			if(scan < input.length() - 7 && diagram.length()==0 && input.substring(scan, scan+7).equals("Diagram")) {
+				int count = scan + 10;
+				for(int i = scan + 10; !input.substring(i, i + 2).equals("],"); i++) {
+					count++;
+				}
+				diagram = input.substring(scan + 10, count - 1);
+				scan = count + 3;
+			}
+			
+			//Declare questionNumber Variable
+			if(scan < input.length() - 15 && questionNumber.length()==0 && input.substring(scan, scan+15).equals("Question Number")) {
+				int count = scan + 18;
+				for(int i = scan + 18; !input.substring(i, i + 1).equals("]"); i++) {
+					count++;
+				}
+				questionNumber = input.substring(scan + 18, count - 1);
+            	scan = count + 3;
+			}
+			
+			//Declare question Variable
+			if(scan < input.length() - 8 && question.length()==0 && input.substring(scan, scan+8).equals("Question")) {
+				int count = scan + 11;
+				for(int i = scan + 11; !input.substring(i, i + 3).equals("],["); i++) {
+					count++;
+				}
+				question = input.substring(scan + 11, count - 1);
+            	scan = count + 3;
+			}
+			
+			//Declare choices Variable
+			if(scan < input.length() - 7 && choices.length()==0 && input.substring(scan, scan+7).equals("Choices")) {
+				int count = scan + 10;
+				for(int i = scan + 10; !input.substring(i, i + 3).equals("],["); i++) {
+					count++;
+				}
+				choices = input.substring(scan + 10, count - 1);
+				scan = count + 3;
+			}
+			
+			//Declare answer Variable
+			if(scan < input.length() - 6 && answer.length()==0 && input.substring(scan, scan+6).equals("Answer")) {
+				int count = scan + 9;
+				for(int i = scan + 9; !input.substring(i, i + 1).equals("]"); i++) {
+					count++;
+				}
+				answer = input.substring(scan + 9, count - 1);
+            	scan = count + 3;
+			}
+			
+			//Declare Solution Variable
+			if(scan < input.length() - 8 && solution.length()==0 && input.substring(scan, scan+8).equals("Solution")) {
+				int count = scan + 11;
+				for(int i = scan + 11; !input.substring(i, i + 2).equals("]]"); i++) {
+					count++;
+				}
+				solution = input.substring(scan + 11, count - 1);
+            	scan = count;
+			}
+			scan++;
+		}
+		return output;
+	}
+	
+	public static void main(String[] args) {
+		System.out.print(makeIngest("[[\"Form Code\",\"TB-15\"],[\"Passage Code\",\"pd-40\"],[\"Question Number\",\"42\"],[\"Problem Set Number\",\"1\"],[\"Test\",\"SAT\"],[\"Subject\",\"Reading\"],[\"Category\",\"Information and Ideas/Citing textual evidence\"],[\"Difficulty\",\"4\"],[\"Analysis Category\",\"History/Social Studies\"],[\"Command of Evidence\"],[\"Question\",\"Which choice provides the best evidence for the answer to the previous question?\"],[\"Choices\",[\"\\u005Creflines [Capital]{ThereApprehension} (“There \\u005CEllipsis apprehension”)\",\"\\u005Creflines [Capital]{ItIsYou} (“It \\u005CEllipsis you”)\",\"\\u005Creflines [Capital]{IHaveExists} (“I have \\u005CEllipsis exists”)\",\"\\u005Creflines [Capital]{ItIsLaw} (“It \\u005CEllipsis law”)\"]],[\"Answer\",\"D\"],[\"Solution\",\"Choice~\\u005CTextChoice {4} is correct. It cites the sentence relied upon in the solution for the preceding question.\"]]"));
+	}
+}
